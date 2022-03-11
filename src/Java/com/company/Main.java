@@ -8,6 +8,7 @@ public class Main {
 
         //print the gameBoard
         board.startGame();
+        board.playAgain();
     }
 
     public static void startGame(){

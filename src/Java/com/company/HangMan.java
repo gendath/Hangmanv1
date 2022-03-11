@@ -1,21 +1,36 @@
 package com.company;
 
-import jdk.swing.interop.SwingInterOpUtils;
-
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class HangMan {
+    private Scanner scanner = new Scanner(System.in);
     private int currentState;
     private final ArrayList<String> boardStates = new ArrayList<>();
     private final ArrayList<String> words = new ArrayList<>();
     private final ArrayList<Character> guesses = new ArrayList<>();
     private String currentWord="";
+    private boolean gameOver =false;
 
-    public void setCurrentWord(String currentWord) {
-        this.currentWord = currentWord;
-    }
 
-    public static void playAgain(){
+
+    public  void playAgain(){
+        System.out.print("\nPlay Again? (y or n)-->");
+        try{
+            String input = scanner.nextLine().toLowerCase();
+            if(input.equals("y")){
+                startGame();
+            }else if(input.equals("n")){
+                System.out.println("GOODBYE!");
+            }else{
+                throw new Exception("Please select either y or n");
+            }
+
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            playAgain();
+        }
+
 
     }
     public String getNewWord(){
@@ -23,15 +38,14 @@ public class HangMan {
         return words.get(index);
     }
     public int printBoard(int state){
-
-
-
+        boolean hasWon=true;
         if(state>=0 && state<boardStates.size()){
             System.out.println("");
             System.out.println("");
 
             System.out.println(boardStates.get(state));
             if(state==6){
+                gameOver=true;
                 return 1;
             }
             for(char c:currentWord.toCharArray()){
@@ -39,10 +53,19 @@ public class HangMan {
                     System.out.print(" " + c + " ");
                 }else{
                     System.out.print(" _ ");
+
+                    hasWon=false;
                 }
             }
-            System.out.print("\n");
-            System.out.print("Make Your Guess-->");
+            if(!hasWon){
+                System.out.print("\n");
+                System.out.print("Make Your Guess-->");
+            }else{
+                System.out.println("");
+                System.out.println("You Win!!!");
+                gameOver =true;
+            }
+
             return 1;
         }else{
             return -1;
@@ -50,25 +73,59 @@ public class HangMan {
 
 
     }
+    public char getGuess(){
+        try{
+            String input = scanner.nextLine().toLowerCase();
+            if(input.length()>1 || input.isEmpty()){
+                throw new Exception("Invalid Entry, please enter a letter");
+            }
+
+            char guess = input.charAt(0);
+
+            if(!Character.isLetter(guess)){
+                throw new Exception("Invalid Entry, please enter a letter");
+            }
+
+            if(guesses.contains(guess)){
+                throw new Exception("You've already guessed '"+guess +"'" );
+            }
+
+            if(!currentWord.contains(String.valueOf(guess))){
+                currentState++;
+            }
+            return guess;
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+            System.out.print("Make Your Guess-->");
+            return getGuess();
+        }
+
+    }
     public void startGame() {
         System.out.println("Welcome to the culturally inappropriate game where we");
         System.out.println("hang a man if his spelling skills aren't up to snuff!");
         System.out.println("**********************HANGMAN************************");
-        boolean playing=true;
-        int state = 0;
+        setCurrentState(0);
         setCurrentWord(getNewWord());
-        while(playing){
-            printBoard(state++);
-            if(state==7){
+        gameOver=false;
+        while(true){
+            printBoard(getCurrentState());
+
+            if(gameOver){
                 break;
+            }else{
+                guesses.add(getGuess());
             }
+
 
 
         }
 
     }
 
-
+    public void setCurrentWord(String currentWord) {
+        this.currentWord = currentWord;
+    }
     public String getCurrentWord() {
         return currentWord;
     }
