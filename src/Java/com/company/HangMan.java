@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class HangMan {
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
     private int currentState;
     private final ArrayList<String> boardStates = new ArrayList<>();
     private final ArrayList<String> words = new ArrayList<>();
@@ -33,22 +33,22 @@ public class HangMan {
 
 
     }
-    public String getNewWord(){
+    public void getNewWord(){
         int index = (int) (Math.random()*words.size()-1);
-        return words.get(index);
+        setCurrentWord(words.get(index));
     }
     public int printBoard(int state){
         boolean hasWon=true;
         if(state>=0 && state<boardStates.size()){
-            System.out.println("");
-            System.out.println("");
+            System.out.println();
+            System.out.println();
 
             System.out.println(boardStates.get(state));
             if(state==6){
                 gameOver=true;
                 return 1;
             }
-            for(char c:currentWord.toCharArray()){
+            for(char c:currentWord.toLowerCase().toCharArray()){
                 if(guesses.contains(c)){
                     System.out.print(" " + c + " ");
                 }else{
@@ -61,7 +61,7 @@ public class HangMan {
                 System.out.print("\n");
                 System.out.print("Make Your Guess-->");
             }else{
-                System.out.println("");
+                System.out.println();
                 System.out.println("You Win!!!");
                 gameOver =true;
             }
@@ -76,7 +76,7 @@ public class HangMan {
     public char getGuess(){
         try{
             String input = scanner.nextLine().toLowerCase();
-            if(input.length()>1 || input.isEmpty()){
+            if(input.length() != 1){
                 throw new Exception("Invalid Entry, please enter a letter");
             }
 
@@ -87,7 +87,7 @@ public class HangMan {
             }
 
             if(guesses.contains(guess)){
-                throw new Exception("You've already guessed '"+guess +"'" );
+                throw new Exception("You've already guessed '"+ guess +"'" );
             }
 
             if(!currentWord.contains(String.valueOf(guess))){
@@ -106,7 +106,7 @@ public class HangMan {
         System.out.println("hang a man if his spelling skills aren't up to snuff!");
         System.out.println("**********************HANGMAN************************");
         setCurrentState(0);
-        setCurrentWord(getNewWord());
+        getNewWord();
         gameOver=false;
         while(true){
             printBoard(getCurrentState());
