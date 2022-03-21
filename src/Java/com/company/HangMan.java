@@ -8,7 +8,7 @@ public class HangMan {
     private int currentState;
     private final ArrayList<String> boardStates = new ArrayList<>();
     private final ArrayList<String> words = new ArrayList<>();
-    private final ArrayList<Character> guesses = new ArrayList<>();
+    private  ArrayList<Character> guesses = new ArrayList<>();
     private String currentWord="";
     private boolean gameOver =false;
 
@@ -19,6 +19,7 @@ public class HangMan {
         try{
             String input = scanner.nextLine().toLowerCase();
             if(input.equals("y")){
+                guesses=new ArrayList<>();
                 startGame();
             }else if(input.equals("n")){
                 System.out.println("GOODBYE!");
@@ -120,6 +121,7 @@ public class HangMan {
 
 
         }
+        playAgain();
 
     }
 
